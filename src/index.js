@@ -1,34 +1,35 @@
 //const productAPI ="https://api.themoviedb.org/3/movie/550?api_key=e122cf97e82f5359788f6cc0b17aa4df";
 //const productAPI ="https://api.themoviedb.org/3/movie/top_rated?api_key=e122cf97e82f5359788f6cc0b17aa4df";
 let page = 1;
-let productAPI =`https://api.themoviedb.org/3/movie/popular?api_key=e122cf97e82f5359788f6cc0b17aa4df&page=${page}`;
-const backBtn = document.querySelector('.backBtn');
-const nextBtn = document.querySelector('.nextBtn');
+let productAPI = `https://api.themoviedb.org/3/movie/popular?api_key=e122cf97e82f5359788f6cc0b17aa4df`;
+const backBtn = document.querySelector(".backBtn");
+const nextBtn = document.querySelector(".nextBtn");
 
-nextBtn.addEventListener('click', ()=> {
-   if(page < 1000){
-    page+= 1;
-    getURL(productAPI)
-  } 
-})
-
-backBtn.addEventListener('click', ()=> {
-  if(page > 1){
-    page-= 1;
-    getURL(productAPI)
-  }
-})
-
-
-const getURL = async (url) => {
-  const res = await fetch(url);
-  const data = await res.json();
-  return data;
-};
-getURL(productAPI).then((data) => {
-  console.log(data.results);
-  products(data);
+nextBtn.addEventListener("click", () => {
+    if (page < 1000) {
+        page += 1;
+        getURL(productAPI, page).then((data) => products(data));
+    }
 });
+
+backBtn.addEventListener("click", () => {
+    if (page > 1) {
+        page -= 1;
+        getURL(productAPI, page).then((data) => products(data));
+    }
+});
+
+const getURL = async (url, page = 1) => {
+    const fullUrl = new URL(url);
+    fullUrl.searchParams.append("page", page);
+
+    const res = await fetch(fullUrl.toString());
+    console.log(res)
+    const data = await res.json();
+    return data;
+};
+
+getURL(productAPI).then((data) => products(data));
 
 const products = (product) => {
     const productContainer = document.querySelector('.products')
